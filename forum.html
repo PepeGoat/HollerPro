@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HollerPro</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1117; --bg2: #1a1d27; --bg3: #22263a; --border: #2e3248;
+  --accent: #6c63ff; --accent2: #8b83ff; --text: #e8eaf6; --text2: #9399b2;
+  --green: #43d97a; --red: #f4645f; --personal: #e879f9;
+  --radius: 12px; --sidebar-w: 240px;
+}
+html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+.hidden { display: none !important; }
+.screen { height: 100vh; }
+
+/* AUTH */
+#auth-screen { display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 60% 40%, #1e1b4b 0%, var(--bg) 70%); }
+.auth-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 40px 36px; width: 380px; box-shadow: 0 24px 64px rgba(0,0,0,.5); }
+.auth-logo { text-align: center; margin-bottom: 28px; }
+.logo-icon { width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--personal)); display: inline-flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+.auth-logo h1 { font-size: 22px; font-weight: 700; }
+.auth-logo p { color: var(--text2); font-size: 13px; margin-top: 4px; }
+.auth-tabs { display: flex; margin-bottom: 24px; background: var(--bg3); border-radius: 10px; padding: 4px; }
+.tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--text2); border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all .2s; }
+.tab-btn.active { background: var(--accent); color: #fff; }
+.auth-form { display: flex; flex-direction: column; gap: 12px; }
+.auth-form input { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-size: 14px; outline: none; transition: border .2s; }
+.auth-form input:focus { border-color: var(--accent); }
+.auth-error { color: var(--red); font-size: 13px; min-height: 18px; text-align: center; }
+
+/* APP */
+#app-screen { display: flex; }
+#sidebar { width: var(--sidebar-w); background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; overflow-y: auto; flex-shrink: 0; }
+.sidebar-header { display: flex; align-items: center; gap: 10px; padding: 18px 16px 14px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 16px; }
+.logo-small { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--personal)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; }
+.user-badge { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0; }
+.user-badge span { flex: 1; font-size: 13px; font-weight: 600; }
+#logout-btn { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px; transition: color .2s; }
+#logout-btn:hover { color: var(--red); }
+.nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--text2); padding: 14px 16px 6px; text-transform: uppercase; }
+#forum-nav { flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 14px; width: calc(100% - 12px); margin: 1px 6px; background: none; border: none; color: var(--text2); cursor: pointer; font-size: 13px; text-align: left; border-radius: 8px; transition: all .15s; }
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active-nav { background: rgba(108,99,255,.18); color: var(--accent2); font-weight: 600; }
+.personal-btn { color: var(--personal) !important; }
+.personal-btn.active-nav { background: rgba(232,121,249,.15) !important; }
+.personal-nav { border-top: 1px solid var(--border); padding-bottom: 12px; }
+.nav-icon { font-size: 15px; width: 20px; text-align: center; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+#forum-header { padding: 20px 28px 14px; border-bottom: 1px solid var(--border); background: var(--bg2); flex-shrink: 0; }
+#forum-title { font-size: 20px; font-weight: 700; }
+#forum-subtitle { font-size: 12px; color: var(--text2); margin-top: 3px; }
+#posts-area { flex: 1; overflow-y: auto; padding: 16px 24px; }
+
+/* POST */
+.post-card { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.post-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+.post-body { flex: 1; }
+.post-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.post-author { font-weight: 600; font-size: 14px; }
+.post-time { font-size: 11px; color: var(--text2); }
+.post-content { font-size: 14px; line-height: 1.6; word-break: break-word; }
+.post-recipients { font-size: 11px; color: var(--personal); margin-top: 4px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.post-recipients span { background: rgba(232,121,249,.12); border-radius: 4px; padding: 1px 6px; }
+.personal-tag { font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 1px 6px; background: rgba(232,121,249,.2); color: var(--personal); border-radius: 4px; }
+.empty-state { text-align: center; color: var(--text2); padding: 60px 20px; font-size: 15px; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+/* COMPOSE */
+#compose-area { border-top: 1px solid var(--border); padding: 14px 24px 16px; background: var(--bg2); flex-shrink: 0; }
+#personal-hint { font-size: 12px; color: var(--personal); margin-bottom: 10px; padding: 8px 12px; background: rgba(232,121,249,.08); border-radius: 8px; border-left: 3px solid var(--personal); }
+#personal-hint code { font-family: monospace; background: rgba(232,121,249,.15); padding: 1px 4px; border-radius: 3px; }
+.compose-box { display: flex; gap: 12px; }
+.compose-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+.compose-right { flex: 1; }
+textarea#post-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; color: var(--text); font-size: 14px; font-family: inherit; resize: none; outline: none; transition: border .2s; line-height: 1.5; }
+textarea#post-input:focus { border-color: var(--accent); }
+.compose-footer { display: flex; justify-content: flex-end; margin-top: 8px; position: relative; }
+#autocomplete-box { position: absolute; bottom: calc(100% + 4px); right: 0; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,.4); z-index: 100; overflow: hidden; }
+.ac-item { padding: 9px 14px; cursor: pointer; font-size: 13px; transition: background .15s; display: flex; align-items: center; gap: 8px; }
+.ac-item:hover, .ac-item.selected { background: var(--bg3); color: var(--accent2); }
+.ac-avatar { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; color: #fff; flex-shrink: 0; }
+.btn-primary { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+.loading { text-align: center; padding: 30px; color: var(--text2); }
+</style>
+</head>
+<body>
+
+<div id="auth-screen" class="screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-icon">H</div>
+      <h1>HollerPro</h1>
+      <p>Join the conversation</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="tab-btn active" data-tab="login">Login</button>
+      <button class="tab-btn" data-tab="register">Register</button>
+    </div>
+    <form id="login-form" class="auth-form">
+      <input type="text" id="login-username" placeholder="Username" autocomplete="username" required>
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit" class="btn-primary">Login</button>
+      <div class="auth-error" id="login-error"></div>
+    </form>
+    <form id="register-form" class="auth-form hidden">
+      <input type="text" id="reg-username" placeholder="Username (3–20 chars, letters/numbers/_)" autocomplete="username" required>
+      <input type="password" id="reg-password" placeholder="Password (min 4 chars)" autocomplete="new-password" required>
+      <button type="submit" class="btn-primary">Create Account</button>
+      <div class="auth-error" id="reg-error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app-screen" class="screen hidden">
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-small">H</div>
+      <span>HollerPro</span>
+    </div>
+    <div class="user-badge">
+      <div class="avatar" id="sidebar-avatar"></div>
+      <span id="sidebar-username"></span>
+      <button id="logout-btn" title="Logout">&#x2715;</button>
+    </div>
+    <nav id="forum-nav"><div class="nav-section-label">FORUMS</div></nav>
+    <div class="personal-nav">
+      <div class="nav-section-label">PRIVATE</div>
+      <button class="nav-item personal-btn" data-forum="personal">
+        <span class="nav-icon">&#x1F512;</span> Personal
+      </button>
+    </div>
+  </aside>
+  <main id="main">
+    <div id="forum-header">
+      <h2 id="forum-title"></h2>
+      <div id="forum-subtitle"></div>
+    </div>
+    <div id="posts-area"><div id="posts-list"></div></div>
+    <div id="compose-area">
+      <div id="personal-hint" class="hidden">
+        <span>&#128274; Private: type <code>/p/ username1 username2 your message</code> — only those users will see it</span>
+      </div>
+      <div class="compose-box">
+        <div class="compose-avatar" id="compose-avatar"></div>
+        <div class="compose-right">
+          <textarea id="post-input" placeholder="Write something..." rows="2"></textarea>
+          <div class="compose-footer">
+            <div id="autocomplete-box" class="hidden"></div>
+            <button id="submit-post" class="btn-primary">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const FORUMS = [
+  { id:'sports',   name:'Sports',           icon:'⚽', desc:'Football, basketball, tennis, and all things sports' },
+  { id:'music',    name:'Music',            icon:'🎵', desc:'Artists, albums, concerts, and music news' },
+  { id:'gossip',   name:'Gossip',           icon:'🗣️',  desc:'Celebrity news, drama, and hot takes' },
+  { id:'gaming',   name:'Gaming',           icon:'🎮', desc:'Video games, esports, and game reviews' },
+  { id:'tech',     name:'Technology',       icon:'💻', desc:'Gadgets, software, AI, and tech news' },
+  { id:'movies',   name:'Movies & TV',      icon:'🎬', desc:'Reviews, recommendations, and discussions' },
+  { id:'food',     name:'Food & Cooking',   icon:'🍕', desc:'Recipes, restaurants, and food culture' },
+  { id:'travel',   name:'Travel',           icon:'✈️',  desc:'Destinations, tips, and travel stories' },
+  { id:'fashion',  name:'Fashion & Style',  icon:'👗', desc:'Trends, outfits, and style advice' },
+  { id:'fitness',  name:'Health & Fitness', icon:'💪', desc:'Workouts, nutrition, and wellness' },
+  { id:'science',  name:'Science',          icon:'🔬', desc:'Discoveries, research, and the universe' },
+  { id:'politics', name:'Politics',         icon:'🏛️',  desc:'World events, news, and current affairs' },
+  { id:'art',      name:'Art & Design',     icon:'🎨', desc:'Creativity, design, and visual arts' },
+  { id:'books',    name:'Books & Lit',      icon:'📚', desc:'Reading, writing, and literary discussions' },
+  { id:'memes',    name:'Memes & Humor',    icon:'😂', desc:'Funny stuff, memes, and internet culture' },
+];
+
+const COLORS = ['#6c63ff','#e879f9','#43d97a','#fbbf24','#f4645f','#38bdf8','#fb923c','#a3e635'];
+const aColor = u => { let h=0; for(const c of(u||'x'))h=(h*31+c.charCodeAt(0))&0x7fffffff; return COLORS[h%COLORS.length]; };
+const ini = u => (u||'?').slice(0,2).toUpperCase();
+const ago = ts => { const d=Math.floor((Date.now()-ts)/1000); if(d<60)return'just now'; if(d<3600)return`${Math.floor(d/60)}m ago`; if(d<86400)return`${Math.floor(d/3600)}h ago`; return`${Math.floor(d/86400)}d ago`; };
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const uid = () => Math.random().toString(36).slice(2)+Date.now().toString(36);
+
+async function hashPass(p) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p+'forum-salt-2024'));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+const DB = {
+  get(k,d=null){try{return JSON.parse(localStorage.getItem(k))??d;}catch{return d;}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v));},
+  users(){return this.get('f:users',{});},
+  posts(fid){return this.get(`f:posts:${fid}`,[]);},
+  personal(){return this.get('f:personal',[]);},
+};
+
+let me=null, forum='sports', acRes=[], acSel=-1, timer=null;
+const bc = typeof BroadcastChannel!=='undefined'?new BroadcastChannel('hollerpro'):null;
+if(bc) bc.onmessage=()=>{if(me)loadPosts();};
+
+const $=id=>document.getElementById(id);
+
+// Auth tabs
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelectorAll('.auth-form').forEach(x=>x.classList.add('hidden'));
+  $(`${b.dataset.tab}-form`).classList.remove('hidden');
+}));
+
+$('register-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const err=$('reg-error'), u=$('reg-username').value.trim(), p=$('reg-password').value;
+  err.textContent='';
+  if(!u||!p)return(err.textContent='Fill in all fields');
+  if(u.length<3||u.length>20)return(err.textContent='Username must be 3–20 characters');
+  if(!/^[a-zA-Z0-9_]+$/.test(u))return(err.textContent='Only letters, numbers, underscores');
+  if(p.length<4)return(err.textContent='Password must be at least 4 characters');
+  const users=DB.users();
+  if(users[u.toLowerCase()])return(err.textContent='Username already taken');
+  users[u.toLowerCase()]={username:u,hash:await hashPass(p),createdAt:Date.now()};
+  DB.set('f:users',users);
+  me=u; DB.set('f:session',u); showApp();
+});
+
+$('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const err=$('login-error'), u=$('login-username').value.trim(), p=$('login-password').value;
+  err.textContent='';
+  const users=DB.users(), rec=users[u.toLowerCase()];
+  if(!rec||await hashPass(p)!==rec.hash)return(err.textContent='Invalid username or password');
+  me=rec.username; DB.set('f:session',rec.username); showApp();
+});
+
+$('logout-btn').addEventListener('click',()=>{
+  me=null; DB.set('f:session',null); clearInterval(timer);
+  $('app-screen').classList.add('hidden');
+  $('auth-screen').classList.remove('hidden');
+  $('login-username').value=''; $('login-password').value='';
+});
+
+function setAv(el,u){el.textContent=ini(u);el.style.background=aColor(u);}
+
+function showApp(){
+  $('auth-screen').classList.add('hidden');
+  $('app-screen').classList.remove('hidden');
+  $('sidebar-username').textContent=me;
+  setAv($('sidebar-avatar'),me); setAv($('compose-avatar'),me);
+  buildNav(); switchForum('sports');
+  clearInterval(timer); timer=setInterval(loadPosts,5000);
+}
+
+function buildNav(){
+  const nav=$('forum-nav');
+  nav.innerHTML='<div class="nav-section-label">FORUMS</div>';
+  for(const f of FORUMS){
+    const b=document.createElement('button');
+    b.className='nav-item'+(f.id===forum?' active-nav':'');
+    b.dataset.forum=f.id;
+    b.innerHTML=`<span class="nav-icon">${f.icon}</span> ${f.name}`;
+    b.addEventListener('click',()=>switchForum(f.id));
+    nav.appendChild(b);
+  }
+}
+
+function switchForum(fid){
+  forum=fid;
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active-nav',b.dataset.forum===fid));
+  if(fid==='personal'){
+    $('forum-title').innerHTML='🔒 Personal';
+    $('forum-subtitle').textContent='Private messages — only visible to you and the people you address';
+    $('personal-hint').classList.remove('hidden');
+    $('post-input').placeholder='/p/ username1 username2 your message here...';
+  } else {
+    const f=FORUMS.find(x=>x.id===fid);
+    $('forum-title').innerHTML=`${f.icon} ${f.name}`;
+    $('forum-subtitle').textContent=f.desc;
+    $('personal-hint').classList.add('hidden');
+    $('post-input').placeholder=`Write something in ${f.name}...`;
+  }
+  loadPosts();
+}
+document.querySelector('.personal-btn').addEventListener('click',()=>switchForum('personal'));
+
+function loadPosts(){
+  if(forum==='personal'){
+    const all=DB.personal(), myL=me.toLowerCase();
+    renderPosts(all.filter(m=>m.sender.toLowerCase()===myL||m.recipients.some(r=>r.toLowerCase()===myL)).slice().reverse());
+  } else {
+    renderPosts(DB.posts(forum).slice().reverse());
+  }
+}
+
+function renderPosts(posts){
+  const pl=$('posts-list'), isP=forum==='personal';
+  if(!posts.length){pl.innerHTML=`<div class="empty-state"><div class="empty-icon">💬</div>No posts yet — be the first!</div>`;return;}
+  pl.innerHTML=posts.map(p=>{
+    const name=p.username||p.sender, col=aColor(name);
+    const others=isP?(p.recipients||[]).filter(r=>r.toLowerCase()!==p.sender.toLowerCase()):[];
+    return`<div class="post-card">
+      <div class="post-avatar" style="background:${col}">${ini(name)}</div>
+      <div class="post-body">
+        <div class="post-meta">
+          <span class="post-author">${esc(name)}</span>
+          ${isP?'<span class="personal-tag">PRIVATE</span>':''}
+          <span class="post-time">${ago(p.createdAt)}</span>
+        </div>
+        <div class="post-content">${esc(p.content)}</div>
+        ${others.length?`<div class="post-recipients">To: ${others.map(r=>`<span>@${esc(r)}</span>`).join('')}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+$('submit-post').addEventListener('click',submitPost);
+$('post-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){if(acRes.length&&acSel>=0){pickAc(acSel);return;}e.preventDefault();submitPost();}
+  if(e.key==='ArrowDown'){acSel=Math.min(acSel+1,acRes.length-1);renderAc();e.preventDefault();}
+  if(e.key==='ArrowUp'){acSel=Math.max(acSel-1,0);renderAc();e.preventDefault();}
+  if(e.key==='Escape'){$('autocomplete-box').classList.add('hidden');acRes=[];}
+});
+
+function submitPost(){
+  const text=$('post-input').value.trim();
+  if(!text)return;
+  if(forum==='personal'){
+    if(!text.startsWith('/p/')){toast('Private messages must start with /p/');return;}
+    const parts=text.slice(3).trim().split(' '), users=DB.users();
+    const recips=[]; let ms=0;
+    for(let i=0;i<parts.length;i++){
+      const w=parts[i];
+      if(/^[a-zA-Z0-9_]{3,20}$/.test(w)&&users[w.toLowerCase()]){recips.push(users[w.toLowerCase()].username);ms=i+1;}
+      else break;
+    }
+    const content=parts.slice(ms).join(' ').trim();
+    if(!content){toast('Add a message after the usernames');return;}
+    if(!recips.length){toast('No valid usernames found after /p/');return;}
+    const all=DB.personal();
+    all.push({id:uid(),sender:me,recipients:recips,content,createdAt:Date.now()});
+    DB.set('f:personal',all);
+  } else {
+    const posts=DB.posts(forum);
+    posts.push({id:uid(),username:me,content:text,createdAt:Date.now()});
+    DB.set(`f:posts:${forum}`,posts);
+  }
+  $('post-input').value=''; $('autocomplete-box').classList.add('hidden'); acRes=[];
+  loadPosts(); if(bc)bc.postMessage('u');
+}
+
+let acT=null;
+$('post-input').addEventListener('input',()=>{clearTimeout(acT);acT=setTimeout(handleAc,120);});
+
+function handleAc(){
+  const val=$('post-input').value;
+  if(!val.startsWith('/p/')){$('autocomplete-box').classList.add('hidden');return;}
+  const words=val.slice(3).trimStart().split(' '), last=words[words.length-1];
+  if(!last){$('autocomplete-box').classList.add('hidden');return;}
+  const users=DB.users();
+  for(let i=0;i<words.length-1;i++){if(!users[words[i].toLowerCase()]){$('autocomplete-box').classList.add('hidden');return;}}
+  acRes=Object.values(users).map(u=>u.username).filter(u=>u.toLowerCase().startsWith(last.toLowerCase())&&u.toLowerCase()!==me.toLowerCase());
+  acSel=-1; renderAc();
+}
+
+function renderAc(){
+  const box=$('autocomplete-box');
+  if(!acRes.length){box.classList.add('hidden');return;}
+  box.classList.remove('hidden');
+  box.innerHTML=acRes.map((u,i)=>`<div class="ac-item${i===acSel?' selected':''}" data-idx="${i}"><div class="ac-avatar" style="background:${aColor(u)}">${ini(u)}</div>${esc(u)}</div>`).join('');
+  box.querySelectorAll('.ac-item').forEach(el=>el.addEventListener('click',()=>pickAc(+el.dataset.idx)));
+}
+
+function pickAc(idx){
+  const u=acRes[idx], val=$('post-input').value;
+  const words=val.slice(3).trimStart().split(' ');
+  words[words.length-1]=u+' ';
+  $('post-input').value='/p/ '+words.join(' ');
+  $('autocomplete-box').classList.add('hidden'); acRes=[];
+  $('post-input').focus();
+}
+
+function toast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#f4645f;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.4);white-space:nowrap';
+  t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3000);
+}
+
+// Restore session
+(function(){
+  const saved=DB.get('f:session');
+  if(saved){const u=DB.users()[saved.toLowerCase()];if(u){me=u.username;showApp();}}
+})();
+</script>
+</body>
+</html>

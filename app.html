@@ -255,15 +255,14 @@ html, body { height: 100%; overflow: hidden; }
     </div>
     <div class="mem-list scroll">
       <div class="mem-lbl">On the rise</div>
-      <div class="mem"><span class="avatar av-2" style="border-radius:13px">G</span><div class="grow"><b>Gaming</b><span>2.1M members</span></div><button class="fjoin on">Joined</button></div>
-      <div class="mem"><span class="avatar av-6" style="border-radius:13px">T</span><div class="grow"><b>Technology</b><span>1.6M members</span></div><button class="fjoin">Join</button></div>
-      <div class="mem"><span class="avatar av-3" style="border-radius:13px">S</span><div class="grow"><b>Sports</b><span>1.2M members</span></div><button class="fjoin on">Joined</button></div>
-      <div class="mem"><span class="avatar av-4" style="border-radius:13px">P</span><div class="grow"><b>Politics</b><span>840k members</span></div><button class="fjoin">Join</button></div>
-      <div class="mem-lbl" style="margin-top:10px">Active now</div>
-      <div class="mem"><span class="avatar av-1">D<span class="av-dot"></span></span><div class="grow"><b>Dev</b><span>commenting in Sports</span></div></div>
-      <div class="mem"><span class="avatar av-6">A<span class="av-dot"></span></span><div class="grow"><b>Ari</b><span>reading Politics</span></div></div>
-      <div class="mem"><span class="avatar av-4">R<span class="av-dot"></span></span><div class="grow"><b>Rae</b><span>posting in Gaming</span></div></div>
-      <div class="mem offline"><span class="avatar av-3">P<span class="av-dot off"></span></span><div class="grow"><b>Priya</b><span>last seen 1h ago</span></div></div>
+      <div class="mem"><span class="avatar av-2" style="border-radius:13px">G</span><div class="grow"><b>Gaming</b></div><button class="fjoin on">Joined</button></div>
+      <div class="mem"><span class="avatar av-6" style="border-radius:13px">T</span><div class="grow"><b>Technology</b></div><button class="fjoin">Join</button></div>
+      <div class="mem"><span class="avatar av-3" style="border-radius:13px">S</span><div class="grow"><b>Sports</b></div><button class="fjoin on">Joined</button></div>
+      <div class="mem"><span class="avatar av-4" style="border-radius:13px">P</span><div class="grow"><b>Politics</b></div><button class="fjoin">Join</button></div>
+      <div class="mem"><span class="avatar av-5" style="border-radius:13px">M</span><div class="grow"><b>Music</b></div><button class="fjoin">Join</button></div>
+      <div class="mem"><span class="avatar av-1" style="border-radius:13px">G</span><div class="grow"><b>Gossip</b></div><button class="fjoin">Join</button></div>
+      <div class="mem-lbl" id="activeLbl" style="margin-top:10px;display:none">Online now</div>
+      <div id="activeUsers"></div>
     </div>
   </aside>
 </div>
@@ -337,29 +336,16 @@ function renderFeed(){
   var fid = currentForum === 'home' || currentForum === 'popular' ? null : currentForum;
   var container = document.getElementById('postsContainer');
 
-  // built-in seed posts
-  var seed = [];
-  if(currentForum === 'home' || currentForum === 'popular' || currentForum === 'sports'){
-    seed.push({ id:'s1', username:'Marcus', forum:'Sports', content:'Late winner in the derby — best comeback of the season, or did the ref hand it to them?\n\nDown two at the 70th, three goals in fifteen minutes, and a stoppage-time header to win it. Incredible football — but that second penalty was soft.', createdAt: Date.now()-3*3600000, reactions:{fire:312,ball:188}, replies:489 });
-  }
-  if(currentForum === 'home' || currentForum === 'popular' || currentForum === 'politics'){
-    seed.push({ id:'s2', username:'Priya', forum:'Politics', content:'Breaking down today\'s budget vote — what actually changed, minus the spin\n\nCutting through the headlines: here\'s what passed, what got dropped, and who it affects first.', createdAt: Date.now()-5*3600000, reactions:{think:96,pray:64}, replies:1200 });
-  }
-  if(currentForum === 'home' || currentForum === 'popular' || currentForum === 'tech'){
-    seed.push({ id:'s3', username:'Jonah', forum:'Technology', content:'First look: the foldable everyone\'s arguing about — worth it, or a gimmick?', createdAt: Date.now()-7*3600000, reactions:{fire:211,eyes:140}, replies:233 });
-  }
-
-  // user posts from localStorage
+  // posts from localStorage only
   var stored = fid ? DB.posts(fid) : [];
-  // merge all forums for home
-  if(currentForum === 'home'){
+  if(currentForum === 'home' || currentForum === 'popular'){
     ['sports','politics','tech','gaming','movies','news','music','gossip','fashion','fitness','science','art','books','memes','travel','food'].forEach(function(f){
       DB.posts(f).forEach(function(p){ stored.push(Object.assign({},p,{forum:f})); });
     });
   }
-  stored = stored.slice().reverse();
+  stored.sort(function(a,b){ return b.createdAt - a.createdAt; });
 
-  var all = stored.concat(seed.filter(function(s){ return !stored.find(function(p){ return p.id===s.id; }); }));
+  var all = stored;
 
   if(!all.length){
     container.innerHTML = '<div style="text-align:center;color:var(--text-2);padding:40px 0;font-size:15px">No posts yet — be the first to post!</div>';
@@ -400,6 +386,18 @@ document.querySelectorAll('.fjoin').forEach(function(b){
 });
 
 switchForum('home', document.querySelector('.chan.active'));
+
+// show real users who have accounts
+(function(){
+  var users = Object.values(DB.users());
+  if(!users.length) return;
+  var lbl = document.getElementById('activeLbl');
+  var el = document.getElementById('activeUsers');
+  lbl.style.display = '';
+  el.innerHTML = users.slice(0,8).map(function(u){
+    return '<div class="mem"><span class="avatar" style="background:'+aColor(u.username)+';width:34px;height:34px;font-size:13px">'+ini(u.username)+'<span class="av-dot'+(u.username.toLowerCase()===me.toLowerCase()?'':' off')+'"></span></span><div class="grow"><b>'+esc(u.username)+'</b><span>'+(u.username.toLowerCase()===me.toLowerCase()?'You':'Member')+'</span></div></div>';
+  }).join('');
+})();
 </script>
 </body>
 </html>

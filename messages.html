@@ -373,15 +373,8 @@ document.getElementById('dlSearch').addEventListener('input', function(){
   if(v.indexOf('/p/')=== 0){ this.value=''; openPP(); }
 });
 
-// People picker
+// People picker — only real registered users
 var people = Object.values(DB.users()).map(function(u){ return { n:u.username, h:'@'+u.username.toLowerCase(), col:aColor(u.username) }; });
-// add some seed people for demo
-['Mira Osei','Kells Brennan','Jonah Reed','Dev Raj','Ari Cohen','Rae Mensah','Priya Nair','Marcus Bell'].forEach(function(name){
-  var h = '@'+name.split(' ')[0].toLowerCase();
-  if(!people.find(function(p){ return p.h===h; })){
-    people.push({ n:name, h:h, col:aColor(name) });
-  }
-});
 
 var selected = [], hl = 0;
 var pop = document.getElementById('ppPop'), search = document.getElementById('ppSearch'),
@@ -408,7 +401,8 @@ function renderPP(){
   }).join('');
   var fl=filteredPP();
   if(hl>=fl.length)hl=fl.length-1; if(hl<0)hl=0;
-  listEl.innerHTML=fl.length===0?'<div class="pp-empty">No one matches.</div>':fl.map(function(p,i){
+  var noUsersMsg = people.filter(function(p){ return p.n.toLowerCase()!==me.toLowerCase(); }).length===0 ? 'No other members yet — share HollerPro so people can sign up!' : 'No one matches.';
+  listEl.innerHTML=fl.length===0?'<div class="pp-empty">'+noUsersMsg+'</div>':fl.map(function(p,i){
     return '<div class="pp-row'+(i===hl?' hl':'')+'" data-add="'+p.h+'"><span class="avatar" style="background:'+p.col+';width:32px;height:32px;font-size:12px">'+ini(p.n)+'</span><div><div class="pn">'+esc(p.n)+'</div><div class="ph2">'+p.h+'</div></div><span class="add">＋ Add</span></div>';
   }).join('');
   var n=selected.length;

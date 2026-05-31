@@ -255,7 +255,7 @@ if(!isDemo){
 if(!db){
   var setupBar = document.createElement('div');
   setupBar.className = 'setup-bar';
-  setupBar.innerHTML = '⚡ Posts are device-only right now. <a href="https://console.firebase.google.com" target="_blank">Set up Firebase</a> in firebase-config.js for real-time cross-device sync.';
+  setupBar.innerHTML = '⚡ Posts are device-only right now. <a href="setup.html" style="font-weight:700;color:var(--accent)">Follow the 3-minute setup guide →</a> to sync across all devices.';
   document.querySelector('.main').insertBefore(setupBar, document.querySelector('.chan-head'));
 }
 

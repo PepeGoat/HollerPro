@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HollerPro — Home</title>
+<script src="theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400..800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+html, body { height: 100%; overflow: hidden; }
+.app { height: 100vh; display: grid; grid-template-columns: 76px 264px 1fr 268px; }
+
+/* rail */
+.rail { background: var(--bg-sunk); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 14px 0; gap: 10px; }
+.rail-item { position: relative; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--text-2); background: var(--bg-elev); border: 1px solid var(--border); cursor: pointer; transition: border-radius .2s, transform .12s, background .2s, color .2s; text-decoration: none; }
+.rail-item:hover { border-radius: 13px; color: var(--text); }
+.rail-item.active { background: var(--accent); color: var(--accent-ink); border-color: transparent; border-radius: 14px; }
+.rail-item.active::before { content:""; position:absolute; left:-14px; top:50%; transform: translateY(-50%); width: 5px; height: 26px; background: var(--accent); border-radius: 0 4px 4px 0; }
+.rail-item.av-2,.rail-item.av-3,.rail-item.av-4,.rail-item.av-5,.rail-item.av-6 { color:#fff; border-color: transparent; }
+.rail-sep { width: 30px; height: 1px; background: var(--border-strong); margin: 2px 0; }
+.rail-add { color: var(--sage); border-style: dashed; }
+.rail-add:hover { background: var(--sage-soft); color: var(--sage); }
+.rail-spacer { flex: 1; }
+
+/* sidebar */
+.sidebar { background: var(--bg-elev); border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; }
+.sb-head { padding: 18px 18px 14px; border-bottom: 1px solid var(--border); }
+.sb-head .row { justify-content: space-between; }
+.sb-title { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
+.sb-sub { font-size: 12.5px; color: var(--text-2); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+.dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--sage); display: inline-block; }
+.sb-search { padding: 12px 14px; }
+.sb-search .box { display: flex; align-items: center; gap: 9px; background: var(--bg-sunk); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 12px; color: var(--text-3); }
+.sb-search input { background: none; border: none; outline: none; width: 100%; font-size: 14px; color: var(--text); }
+.sb-search kbd { font-size: 11px; font-weight: 700; color: var(--text-3); background: var(--bg-elev); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+.sb-nav { flex: 1; overflow-y: auto; padding: 6px 10px 14px; min-height: 0; }
+.nav-group { margin-top: 14px; }
+.nav-lbl { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+.nav-lbl span.add { cursor: pointer; font-size: 16px; line-height: 1; }
+.chan { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--r-sm); font-size: 14.5px; font-weight: 600; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; text-decoration: none; }
+.chan:hover { background: var(--bg-sunk); color: var(--text); }
+.chan.active { background: var(--accent-soft); color: var(--accent); }
+.chan .hash { color: var(--text-3); font-weight: 700; }
+.chan.active .hash { color: var(--accent); }
+.chan .badge { margin-left: auto; font-size: 11px; font-weight: 700; background: var(--accent); color: var(--accent-ink); border-radius: 99px; padding: 1px 7px; }
+.chan .lock { font-size: 12px; }
+.sb-foot { border-top: 1px solid var(--border); padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+.sb-foot .me { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.sb-foot .me b { font-size: 14px; font-weight: 700; display: block; }
+.sb-foot .me span { font-size: 12px; color: var(--text-2); }
+.icon-btn { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: var(--text-2); transition: background .15s, color .15s; flex: none; }
+.icon-btn:hover { background: var(--bg-sunk); color: var(--text); }
+
+/* main */
+.main { display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+.chan-head { height: 64px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 22px; border-bottom: 1px solid var(--border); background: color-mix(in oklab, var(--bg-elev) 60%, var(--bg)); }
+.chan-head h1 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 7px; }
+.chan-head h1 .hash { color: var(--text-3); }
+.chan-head .desc { color: var(--text-2); font-size: 13.5px; padding-left: 14px; margin-left: 14px; border-left: 1px solid var(--border); }
+.chan-head .actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.sort { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--r-pill); border: 1px solid var(--border); background: var(--bg-elev); font-size: 13px; font-weight: 650; color: var(--text-2); cursor: pointer; }
+.sort:hover { color: var(--text); border-color: var(--border-strong); }
+
+.feed { flex: 1; overflow-y: auto; padding: 22px; min-height: 0; }
+.feed-inner { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+/* composer */
+.composer-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 12px; cursor: text; transition: border-color .2s; }
+.composer-card:hover { border-color: var(--border-strong); }
+.composer-card .avatar { width: 36px; height: 36px; font-size: 14px; }
+.composer-card .ph { flex: 1; color: var(--text-3); font-size: 14.5px; }
+
+/* post */
+.post { display: grid; grid-template-columns: 52px 1fr; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--shadow-sm); overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+.post:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+.vote { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 14px 0; background: var(--bg-elev-2); border-right: 1px solid var(--border); }
+.vote button { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; color: var(--text-3); transition: background .15s, color .15s; }
+.vote button:hover { background: var(--bg-sunk); }
+.vote .up:hover, .vote .up.on { color: var(--accent); }
+.vote .down:hover, .vote .down.on { color: var(--info); }
+.vote .count { font-weight: 800; font-size: 14px; font-family: var(--font-display); }
+.vote .up.on ~ .count { color: var(--accent); }
+.post-body { padding: 15px 18px 14px; min-width: 0; }
+.post-meta { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); flex-wrap: wrap; }
+.post-meta .avatar { width: 22px; height: 22px; font-size: 10px; }
+.post-meta b { color: var(--text); font-weight: 700; }
+.post-meta .sep { color: var(--text-3); }
+.post-meta .tag { margin-left: auto; }
+.post-meta .forum { font-weight: 800; color: var(--accent); font-family: var(--font-display); letter-spacing: -0.01em; }
+.fjoin { font-size: 12px; font-weight: 700; padding: 5px 13px; border-radius: 99px; border: 1.5px solid var(--border-strong); color: var(--text); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.fjoin:hover { border-color: var(--accent); color: var(--accent); }
+.fjoin.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.post h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-top: 9px; line-height: 1.25; }
+.post .excerpt { color: var(--text-2); font-size: 14.5px; margin-top: 7px; line-height: 1.55; }
+.post-foot { display: flex; align-items: center; gap: 8px; margin-top: 13px; flex-wrap: wrap; }
+.react { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 650; padding: 4px 11px; border-radius: var(--r-pill); background: var(--bg-sunk); border: 1px solid var(--border); color: var(--text-2); cursor: pointer; transition: border-color .15s; white-space: nowrap; }
+.react:hover { border-color: var(--border-strong); }
+.react.on { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+.post-foot .meta-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 650; color: var(--text-2); padding: 4px 8px; border-radius: var(--r-sm); cursor: pointer; white-space: nowrap; }
+.post-foot .meta-act:hover { color: var(--text); background: var(--bg-sunk); }
+.post-foot .spacer { flex: 1; }
+
+/* replies */
+.replies { margin-top: 13px; padding-top: 13px; border-top: 1px dashed var(--border); display: flex; flex-direction: column; gap: 12px; }
+.reply { display: flex; gap: 10px; }
+.reply .avatar { width: 28px; height: 28px; font-size: 12px; }
+.reply .r-body { min-width: 0; }
+.reply .r-head { font-size: 12.5px; }
+.reply .r-head b { font-weight: 700; }
+.reply .r-head span { color: var(--text-3); margin-left: 6px; }
+.reply .r-text { font-size: 13.5px; color: var(--text-2); margin-top: 2px; line-height: 1.5; }
+.view-all { font-size: 13px; font-weight: 650; color: var(--accent); cursor: pointer; padding-left: 38px; }
+.pinned { border-color: color-mix(in oklab, var(--gold) 45%, var(--border)); }
+.pinned .vote { background: var(--gold-soft); }
+
+/* members panel */
+.members { background: var(--bg-elev); border-left: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; }
+.mem-head { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+.mem-head h4 { font-family: var(--font-display); font-size: 15px; font-weight: 800; }
+.mem-head p { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+.mem-list { flex: 1; overflow-y: auto; padding: 12px; min-height: 0; }
+.mem-lbl { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); padding: 8px 8px 6px; }
+.mem { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--r-sm); cursor: pointer; transition: background .15s; }
+.mem:hover { background: var(--bg-sunk); }
+.mem .avatar { width: 34px; height: 34px; font-size: 13px; }
+.mem.offline .avatar { filter: grayscale(.4) opacity(.7); }
+.mem b { font-size: 14px; font-weight: 650; display: block; }
+.mem span { font-size: 12px; color: var(--text-2); }
+.mem.offline b { color: var(--text-2); }
+.mem .crown { margin-left: auto; color: var(--gold); }
+
+/* new post composer overlay */
+.compose-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.compose-overlay.hidden { display: none; }
+.compose-modal { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; width: 100%; max-width: 560px; box-shadow: var(--shadow-lg); }
+.compose-modal h3 { font-family: var(--font-display); font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.compose-modal textarea { width: 100%; border: 1.5px solid var(--border); border-radius: var(--r-md); background: var(--bg-sunk); color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; resize: none; outline: none; transition: border-color .2s; }
+.compose-modal textarea:focus { border-color: var(--accent); }
+.compose-modal .foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+
+@media (max-width: 1180px) { .app { grid-template-columns: 76px 264px 1fr; } .members { display: none; } }
+@media (max-width: 900px) { .app { grid-template-columns: 68px 1fr; } .sidebar { display: none; } .feed-inner { max-width: 100%; } }
+@media (max-width: 600px) { .app { grid-template-columns: 1fr; } .rail { display: none; } .chan-head .desc { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- rail -->
+  <nav class="rail">
+    <a class="rail-item active" href="app.html" title="Home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="7" cy="17" r="2.1" fill="currentColor" stroke="none"/><path d="M7 11.4A5.6 5.6 0 0 1 12.6 17"/><path d="M7 6.8A10.2 10.2 0 0 1 17.2 17"/><path d="M7 2.6A14.4 14.4 0 0 1 21.4 17"/></svg>
+    </a>
+    <div class="rail-sep"></div>
+    <div class="rail-item av-3" title="Sports">S</div>
+    <div class="rail-item av-4" title="Politics">P</div>
+    <div class="rail-item av-6" title="Technology">T</div>
+    <div class="rail-item av-2" title="Gaming">G</div>
+    <div class="rail-item av-5" title="Movies">M</div>
+    <div class="rail-item av-1" title="World News">N</div>
+    <div class="rail-item rail-add" title="Find a forum">+</div>
+    <div class="rail-spacer"></div>
+    <a class="rail-item" href="messages.html" title="Messages" style="background:transparent;border-color:transparent">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </a>
+    <div class="rail-item" title="Settings" style="background:transparent;border-color:transparent">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </nav>
+
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="row">
+        <div>
+          <div class="sb-title" id="sbTitle">Home</div>
+          <div class="sb-sub"><span class="dot-live"></span> Popular across your forums</div>
+        </div>
+        <button class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      </div>
+    </div>
+    <div class="sb-search">
+      <div class="box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input placeholder="Search HollerPro" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="sb-nav scroll">
+      <div class="nav-group">
+        <div class="nav-lbl">Feeds</div>
+        <div class="chan active" onclick="switchForum('home',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg> Home</div>
+        <div class="chan" onclick="switchForum('popular',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-3 7h7l-3 7"/><circle cx="12" cy="12" r="10"/></svg> Popular</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-lbl">Your forums <span class="add">+</span></div>
+        <div class="chan" onclick="switchForum('sports',this)"><span class="hash">#</span> Sports <span class="badge">9</span></div>
+        <div class="chan" onclick="switchForum('politics',this)"><span class="hash">#</span> Politics <span class="badge">4</span></div>
+        <div class="chan" onclick="switchForum('tech',this)"><span class="hash">#</span> Technology</div>
+        <div class="chan" onclick="switchForum('gaming',this)"><span class="hash">#</span> Gaming</div>
+        <div class="chan" onclick="switchForum('movies',this)"><span class="hash">#</span> Movies</div>
+        <div class="chan" onclick="switchForum('news',this)"><span class="hash">#</span> World News <span class="badge">2</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-lbl">Private</div>
+        <a class="chan" href="messages.html"><span class="lock">🔒</span> Personal</a>
+        <a class="chan" href="messages.html"><span class="lock">✉</span> Mira &amp; Kells <span class="badge">1</span></a>
+        <a class="chan" href="messages.html"><span class="lock">✉</span> Jonah</a>
+      </div>
+    </div>
+    <div class="sb-foot">
+      <div class="me">
+        <span class="avatar av-5" id="footAvatar">J</span>
+        <div><b id="footName">Me</b><span id="footHandle">@me</span></div>
+      </div>
+      <button class="icon-btn" onclick="logout()" title="Log out"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme" style="width:34px;height:34px;flex:none">
+        <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+        <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- main feed -->
+  <main class="main">
+    <header class="chan-head">
+      <h1 id="chanTitle">Home</h1>
+      <span class="desc hide-mobile" id="chanDesc">The best of Sports, Politics &amp; every forum you follow</span>
+      <div class="actions">
+        <button class="sort"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M7 12h10M10 18h4"/></svg> Hot</button>
+        <button class="icon-btn" title="Info"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01" stroke-linecap="round"/></svg></button>
+      </div>
+    </header>
+
+    <div class="feed scroll">
+      <div class="feed-inner" id="feedInner">
+        <div class="composer-card" onclick="document.getElementById('composeOverlay').classList.remove('hidden')">
+          <span class="avatar av-5" id="composeAvatar">J</span>
+          <span class="ph" id="composePh">Share something with your forums…</span>
+          <button class="btn btn-soft btn-sm" onclick="event.stopPropagation()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.4 12.6 12 22l-3.5-3.5"/><path d="M12 2v13"/></svg> Photo</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();document.getElementById('composeOverlay').classList.remove('hidden')">New post</button>
+        </div>
+        <div id="postsContainer"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- right: trending -->
+  <aside class="members">
+    <div class="mem-head">
+      <h4>Trending forums</h4>
+      <p>Hot across HollerPro today</p>
+    </div>
+    <div class="mem-list scroll">
+      <div class="mem-lbl">On the rise</div>
+      <div class="mem"><span class="avatar av-2" style="border-radius:13px">G</span><div class="grow"><b>Gaming</b><span>2.1M members</span></div><button class="fjoin on">Joined</button></div>
+      <div class="mem"><span class="avatar av-6" style="border-radius:13px">T</span><div class="grow"><b>Technology</b><span>1.6M members</span></div><button class="fjoin">Join</button></div>
+      <div class="mem"><span class="avatar av-3" style="border-radius:13px">S</span><div class="grow"><b>Sports</b><span>1.2M members</span></div><button class="fjoin on">Joined</button></div>
+      <div class="mem"><span class="avatar av-4" style="border-radius:13px">P</span><div class="grow"><b>Politics</b><span>840k members</span></div><button class="fjoin">Join</button></div>
+      <div class="mem-lbl" style="margin-top:10px">Active now</div>
+      <div class="mem"><span class="avatar av-1">D<span class="av-dot"></span></span><div class="grow"><b>Dev</b><span>commenting in Sports</span></div></div>
+      <div class="mem"><span class="avatar av-6">A<span class="av-dot"></span></span><div class="grow"><b>Ari</b><span>reading Politics</span></div></div>
+      <div class="mem"><span class="avatar av-4">R<span class="av-dot"></span></span><div class="grow"><b>Rae</b><span>posting in Gaming</span></div></div>
+      <div class="mem offline"><span class="avatar av-3">P<span class="av-dot off"></span></span><div class="grow"><b>Priya</b><span>last seen 1h ago</span></div></div>
+    </div>
+  </aside>
+</div>
+
+<!-- compose overlay -->
+<div class="compose-overlay hidden" id="composeOverlay" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="compose-modal">
+    <h3>New post <button onclick="document.getElementById('composeOverlay').classList.add('hidden')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:22px;line-height:1">✕</button></h3>
+    <div style="font-size:12.5px;color:var(--text-3);margin-bottom:10px">Posting to: <span id="postingTo" style="color:var(--accent);font-weight:700"># Home</span></div>
+    <textarea id="newPostText" rows="5" placeholder="What's on your mind?"></textarea>
+    <div class="foot">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('composeOverlay').classList.add('hidden')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="submitPost()">Post</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DB = {
+  get: function(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } },
+  set: function(k,v){ localStorage.setItem(k,JSON.stringify(v)); },
+  users: function(){ return this.get('f:users',{}); },
+  posts: function(fid){ return this.get('f:posts:'+fid,[]); }
+};
+var COLORS = ['#6c63ff','#e879f9','#43d97a','#fbbf24','#f4645f','#38bdf8','#fb923c','#a3e635'];
+function aColor(u){ var h=0; for(var c of(u||'x'))h=(h*31+c.charCodeAt(0))&0x7fffffff; return COLORS[h%COLORS.length]; }
+function ini(u){ return (u||'?').slice(0,2).toUpperCase(); }
+function ago(ts){ var d=Math.floor((Date.now()-ts)/1000); if(d<60)return'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago'; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// auth guard
+var me = null;
+(function(){
+  var s = DB.get('f:session');
+  if(s){ var u = DB.users()[s.toLowerCase()]; if(u){ me=u.username; return; } }
+  location.href='auth.html';
+})();
+if(me){
+  document.getElementById('footName').textContent = me;
+  document.getElementById('footHandle').textContent = '@'+me.toLowerCase();
+  document.getElementById('footAvatar').textContent = ini(me);
+  document.getElementById('composeAvatar').textContent = ini(me);
+}
+
+function logout(){ DB.set('f:session',null); location.href='auth.html'; }
+
+var currentForum = 'home';
+var FORUM_META = {
+  home:    { title:'Home',        desc:'The best of Sports, Politics & every forum you follow' },
+  popular: { title:'Popular',     desc:'Top posts across all of HollerPro' },
+  sports:  { title:'# Sports',    desc:'Football, basketball, tennis, and all things sports' },
+  politics:{ title:'# Politics',  desc:'World events, news, and current affairs' },
+  tech:    { title:'# Technology',desc:'Gadgets, software, AI, and tech news' },
+  gaming:  { title:'# Gaming',    desc:'Video games, esports, and game reviews' },
+  movies:  { title:'# Movies',    desc:'Reviews, recommendations, and discussions' },
+  news:    { title:'# World News',desc:'Breaking news and global events' },
+};
+
+function switchForum(fid, el){
+  currentForum = fid;
+  document.querySelectorAll('.chan').forEach(function(c){ c.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  var m = FORUM_META[fid] || { title: fid, desc: '' };
+  document.getElementById('chanTitle').textContent = m.title;
+  document.getElementById('chanDesc').textContent = m.desc;
+  document.getElementById('postingTo').textContent = m.title;
+  renderFeed();
+}
+
+function renderFeed(){
+  var fid = currentForum === 'home' || currentForum === 'popular' ? null : currentForum;
+  var container = document.getElementById('postsContainer');
+
+  // built-in seed posts
+  var seed = [];
+  if(currentForum === 'home' || currentForum === 'popular' || currentForum === 'sports'){
+    seed.push({ id:'s1', username:'Marcus', forum:'Sports', content:'Late winner in the derby — best comeback of the season, or did the ref hand it to them?\n\nDown two at the 70th, three goals in fifteen minutes, and a stoppage-time header to win it. Incredible football — but that second penalty was soft.', createdAt: Date.now()-3*3600000, reactions:{fire:312,ball:188}, replies:489 });
+  }
+  if(currentForum === 'home' || currentForum === 'popular' || currentForum === 'politics'){
+    seed.push({ id:'s2', username:'Priya', forum:'Politics', content:'Breaking down today\'s budget vote — what actually changed, minus the spin\n\nCutting through the headlines: here\'s what passed, what got dropped, and who it affects first.', createdAt: Date.now()-5*3600000, reactions:{think:96,pray:64}, replies:1200 });
+  }
+  if(currentForum === 'home' || currentForum === 'popular' || currentForum === 'tech'){
+    seed.push({ id:'s3', username:'Jonah', forum:'Technology', content:'First look: the foldable everyone\'s arguing about — worth it, or a gimmick?', createdAt: Date.now()-7*3600000, reactions:{fire:211,eyes:140}, replies:233 });
+  }
+
+  // user posts from localStorage
+  var stored = fid ? DB.posts(fid) : [];
+  // merge all forums for home
+  if(currentForum === 'home'){
+    ['sports','politics','tech','gaming','movies','news','music','gossip','fashion','fitness','science','art','books','memes','travel','food'].forEach(function(f){
+      DB.posts(f).forEach(function(p){ stored.push(Object.assign({},p,{forum:f})); });
+    });
+  }
+  stored = stored.slice().reverse();
+
+  var all = stored.concat(seed.filter(function(s){ return !stored.find(function(p){ return p.id===s.id; }); }));
+
+  if(!all.length){
+    container.innerHTML = '<div style="text-align:center;color:var(--text-2);padding:40px 0;font-size:15px">No posts yet — be the first to post!</div>';
+    return;
+  }
+
+  container.innerHTML = all.map(function(p){
+    var name = p.username, col = aColor(name);
+    var forumLabel = p.forum || currentForum;
+    return '<article class="post">'
+      +'<div class="vote"><button class="up"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button><span class="count">'+Math.floor(Math.random()*500+10)+'</span><button class="down"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>'
+      +'<div class="post-body"><div class="post-meta"><span class="forum"># '+esc(forumLabel)+'</span><span class="sep">·</span><div class="avatar" style="background:'+col+';width:22px;height:22px;font-size:10px">'+ini(name)+'</div><b>'+esc(name)+'</b><span class="sep">·</span>'+ago(p.createdAt)+'</div>'
+      +'<h3>'+esc(p.content.split('\n')[0])+'</h3>'
+      +(p.content.includes('\n')?'<p class="excerpt">'+esc(p.content.split('\n').slice(1).join(' ').trim())+'</p>':'')
+      +'<div class="post-foot"><button class="react">🔥 '+Math.floor(Math.random()*200+5)+'</button><button class="react">💬 '+(p.replies||Math.floor(Math.random()*50))+'</button><div class="spacer"></div><span class="meta-act">Share</span></div></div></article>';
+  }).join('');
+}
+
+function submitPost(){
+  var text = document.getElementById('newPostText').value.trim();
+  if(!text) return;
+  var fid = currentForum === 'home' || currentForum === 'popular' ? 'sports' : currentForum;
+  var posts = DB.posts(fid);
+  posts.push({ id: Math.random().toString(36).slice(2), username: me, content: text, createdAt: Date.now(), forum: fid });
+  DB.set('f:posts:'+fid, posts);
+  document.getElementById('newPostText').value = '';
+  document.getElementById('composeOverlay').classList.add('hidden');
+  renderFeed();
+}
+
+// toggle join buttons
+document.querySelectorAll('.fjoin').forEach(function(b){
+  b.addEventListener('click', function(e){
+    e.stopPropagation();
+    b.classList.toggle('on');
+    b.textContent = b.classList.contains('on') ? 'Joined' : 'Join';
+  });
+});
+
+switchForum('home', document.querySelector('.chan.active'));
+</script>
+</body>
+</html>

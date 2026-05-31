@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HollerPro — Welcome back</title>
+<script src="theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400..800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.auth { min-height: 100vh; display: grid; grid-template-columns: 1.05fr .95fr; }
+
+.auth-aside {
+  position: relative; overflow: hidden; padding: 40px 56px;
+  display: flex; flex-direction: column;
+  background: linear-gradient(160deg, #D2683E 0%, #BF5430 55%, #A8442A 100%); color: #fff;
+}
+.auth-aside::after { content:""; position:absolute; inset:0; background: radial-gradient(70% 80% at 85% 8%, rgba(255,255,255,.16), transparent 55%); pointer-events:none; }
+.auth-aside > * { position: relative; z-index: 1; }
+.auth-aside .brand-name { color: #fff; }
+.auth-aside .brand-mark { background: rgba(255,255,255,.16); color:#fff; box-shadow:none; backdrop-filter: blur(4px); }
+.aside-mid { margin-top: auto; }
+.aside-mid h2 { font-size: clamp(32px, 3.6vw, 46px); font-weight: 800; letter-spacing: -0.03em; color: #fff; max-width: 460px; }
+.aside-mid p { color: rgba(255,255,255,.9); font-size: 18px; margin-top: 16px; max-width: 420px; line-height: 1.6; }
+.aside-quote { margin-top: 36px; padding: 22px 24px; border-radius: var(--r-lg); background: rgba(255,255,255,.12); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.18); max-width: 440px; }
+.aside-quote p { color: #fff; font-size: 16.5px; font-style: italic; margin: 0; }
+.aside-quote .by { display: flex; align-items: center; gap: 11px; margin-top: 16px; font-style: normal; }
+.aside-quote .by .avatar { width: 38px; height: 38px; border: 2px solid rgba(255,255,255,.4); }
+.aside-quote .by b { font-weight: 700; font-size: 14.5px; }
+.aside-quote .by span { color: rgba(255,255,255,.8); font-size: 13px; }
+.aside-foot { margin-top: 36px; display: flex; gap: 28px; color: rgba(255,255,255,.85); font-size: 13.5px; }
+.aside-foot b { display:block; font-family: var(--font-display); font-size: 24px; font-weight: 800; color:#fff; }
+
+.auth-main { display: flex; flex-direction: column; padding: 28px 40px; overflow-y: auto; }
+.auth-top { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.auth-top span { color: var(--text-2); font-size: 14px; }
+.auth-form-wrap { margin: auto; width: 100%; max-width: 400px; padding: 32px 0; }
+.auth-h { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; }
+.auth-sub { color: var(--text-2); margin-top: 8px; font-size: 15.5px; }
+
+.seg { display: flex; gap: 4px; background: var(--bg-sunk); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 4px; margin: 26px 0 24px; }
+.seg button { flex: 1; padding: 9px 0; border-radius: var(--r-pill); font-weight: 650; font-size: 14.5px; color: var(--text-2); transition: all .2s; }
+.seg button.on { background: var(--bg-elev); color: var(--text); box-shadow: var(--shadow-sm); }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13.5px; font-weight: 650; margin-bottom: 7px; color: var(--text); }
+.input-wrap { position: relative; }
+.input-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+.field input {
+  width: 100%; padding: 13px 14px 13px 42px; border-radius: var(--r-sm);
+  background: var(--bg-elev); border: 1.5px solid var(--border); transition: border-color .2s, box-shadow .2s;
+}
+.field input::placeholder { color: var(--text-3); }
+.field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.field .hint { font-size: 12.5px; color: var(--text-3); margin-top: 6px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 22px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text-2); cursor: pointer; }
+.check input { width: 16px; height: 16px; accent-color: var(--accent); }
+.forgot { font-size: 13.5px; font-weight: 600; color: var(--accent); }
+.auth-submit { width: 100%; }
+.divider { display: flex; align-items: center; gap: 14px; margin: 24px 0; color: var(--text-3); font-size: 12.5px; font-weight: 600; }
+.divider::before, .divider::after { content:""; height: 1px; background: var(--border); flex: 1; }
+.oauth { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.oauth a { display: flex; align-items: center; justify-content: center; gap: 9px; padding: 11px; border-radius: var(--r-sm); border: 1.5px solid var(--border); background: var(--bg-elev); font-weight: 600; font-size: 14px; transition: border-color .2s; }
+.oauth a:hover { border-color: var(--border-strong); }
+.legal { color: var(--text-3); font-size: 12.5px; margin-top: 22px; text-align: center; line-height: 1.6; }
+.legal a { color: var(--text-2); font-weight: 600; }
+.reg-only { display: none; }
+body.register .reg-only { display: block; }
+.auth-err { color: #c0392b; font-size: 13px; margin-top: 6px; min-height: 18px; text-align: center; }
+
+@media (max-width: 860px) {
+  .auth { grid-template-columns: 1fr; }
+  .auth-aside { display: none; }
+  .auth-main { min-height: 100vh; }
+}
+</style>
+</head>
+<body>
+<div class="auth">
+  <aside class="auth-aside">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="7" cy="17" r="2.1" fill="currentColor" stroke="none"/><path d="M7 11.4A5.6 5.6 0 0 1 12.6 17"/><path d="M7 6.8A10.2 10.2 0 0 1 17.2 17"/><path d="M7 2.6A14.4 14.4 0 0 1 21.4 17"/></svg></span>
+      <span class="brand-name">HollerPro</span>
+    </a>
+    <div class="aside-mid">
+      <h2>Good to see you. Come on in.</h2>
+      <p>Your forums, channels and DMs are right where you left them — warm and waiting.</p>
+      <div class="aside-quote">
+        <p>"It's the first forum app where I actually look forward to opening the notifications."</p>
+        <div class="by">
+          <span class="avatar av-2">M</span>
+          <div><b>Mira O.</b><br/><span>Moderator · Sports · 1.2M members</span></div>
+        </div>
+      </div>
+      <div class="aside-foot">
+        <div><b>12.4k</b>communities</div>
+        <div><b>1.8M</b>hollers a day</div>
+        <div><b>4.9★</b>member rating</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="auth-main scroll">
+    <div class="auth-top">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+
+    <div class="auth-form-wrap">
+      <h1 class="auth-h" id="authH">Welcome back</h1>
+      <p class="auth-sub" id="authSub">Log in to pick up the conversation.</p>
+
+      <div class="seg" role="tablist">
+        <button id="tabLogin" class="on" onclick="setMode('login')">Log in</button>
+        <button id="tabReg" onclick="setMode('register')">Create account</button>
+      </div>
+
+      <div class="auth-err" id="authErr"></div>
+
+      <div class="field reg-only">
+        <label>Username</label>
+        <div class="input-wrap">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="regUsername" placeholder="Letters, numbers, underscores" autocomplete="username" />
+        </div>
+      </div>
+      <div class="field">
+        <label id="unLabel">Username</label>
+        <div class="input-wrap">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="loginUsername" placeholder="Your username" autocomplete="username" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="loginPassword" placeholder="••••••••••" autocomplete="current-password" />
+        </div>
+        <div class="hint reg-only">At least 4 characters.</div>
+      </div>
+
+      <div class="row-between">
+        <label class="check"><input type="checkbox" checked /> Keep me signed in</label>
+        <a href="#" class="forgot" id="forgot">Forgot password?</a>
+      </div>
+
+      <button class="btn btn-primary auth-submit btn-lg" id="submitBtn">Log in</button>
+
+      <div class="divider">or continue with</div>
+      <div class="oauth">
+        <a href="app.html"><svg width="17" height="17" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5.5c1.6 0 3 .55 4.1 1.62l3.06-3.06C17.2 2.24 14.8 1.2 12 1.2 7.7 1.2 3.99 3.66 2.18 7.23l3.57 2.77C6.6 7.4 9.06 5.5 12 5.5z"/><path fill="#4285F4" d="M22.6 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.95c-.26 1.38-1.04 2.55-2.21 3.34l3.4 2.64c1.99-1.84 3.46-4.55 3.46-8.24z"/><path fill="#FBBC05" d="M5.75 14.43a6.5 6.5 0 0 1 0-4.86L2.18 6.8a10.8 10.8 0 0 0 0 9.7l3.57-2.07z"/><path fill="#34A853" d="M12 22.8c2.8 0 5.16-.92 6.88-2.51l-3.4-2.64c-.94.63-2.15 1-3.48 1-2.94 0-5.4-1.9-6.25-4.5l-3.57 2.07C3.99 20.34 7.7 22.8 12 22.8z"/></svg> Google</a>
+        <a href="app.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 1.5c.1 1-.3 2-1 2.8-.7.8-1.7 1.4-2.7 1.3-.1-1 .4-2 1-2.7.7-.8 1.8-1.3 2.7-1.4zM19 17.6c-.5 1.1-.7 1.6-1.3 2.6-.9 1.4-2.2 3.1-3.7 3.1-1.4 0-1.7-.9-3.6-.9s-2.3.9-3.6.9c-1.6 0-2.8-1.6-3.6-2.9-2.4-3.6-2.6-7.9-1.2-10.2 1-1.6 2.6-2.6 4.1-2.6 1.5 0 2.4 1 3.7 1 1.2 0 1.9-1 3.7-1 1.3 0 2.7.7 3.7 2-3.2 1.8-2.7 6.4.6 8z"/></svg> Apple</a>
+      </div>
+      <p class="legal">By continuing you agree to HollerPro's <a href="#">Terms</a> &amp; <a href="#">Community Guidelines</a>.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+var DB = {
+  get: function(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } },
+  set: function(k,v){ localStorage.setItem(k,JSON.stringify(v)); },
+  users: function(){ return this.get('f:users',{}); }
+};
+async function hashPass(p){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p+'forum-salt-2024'));
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+function setMode(mode){
+  var isReg = mode === 'register';
+  document.body.classList.toggle('register', isReg);
+  document.getElementById('tabReg').classList.toggle('on', isReg);
+  document.getElementById('tabLogin').classList.toggle('on', !isReg);
+  document.getElementById('authH').textContent = isReg ? 'Create your account' : 'Welcome back';
+  document.getElementById('authSub').textContent = isReg ? 'Set up your HollerPro in under a minute.' : 'Log in to pick up the conversation.';
+  document.getElementById('submitBtn').textContent = isReg ? 'Create account' : 'Log in';
+  document.getElementById('forgot').style.visibility = isReg ? 'hidden' : 'visible';
+  document.getElementById('authErr').textContent = '';
+}
+if (new URLSearchParams(location.search).get('mode') === 'register') setMode('register');
+
+document.getElementById('submitBtn').addEventListener('click', async function(){
+  var err = document.getElementById('authErr');
+  err.textContent = '';
+  var isReg = document.body.classList.contains('register');
+  var password = document.getElementById('loginPassword').value;
+  if (isReg) {
+    var username = document.getElementById('regUsername').value.trim();
+    if (!username || !password) return (err.textContent = 'Fill in all fields');
+    if (username.length < 3 || username.length > 20) return (err.textContent = 'Username must be 3–20 characters');
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) return (err.textContent = 'Only letters, numbers, underscores');
+    if (password.length < 4) return (err.textContent = 'Password must be at least 4 characters');
+    var users = DB.users();
+    if (users[username.toLowerCase()]) return (err.textContent = 'Username already taken');
+    users[username.toLowerCase()] = { username: username, hash: await hashPass(password), createdAt: Date.now() };
+    DB.set('f:users', users);
+    DB.set('f:session', username);
+    location.href = 'app.html';
+  } else {
+    var username = document.getElementById('loginUsername').value.trim();
+    if (!username || !password) return (err.textContent = 'Fill in all fields');
+    var users = DB.users();
+    var rec = users[username.toLowerCase()];
+    if (!rec || await hashPass(password) !== rec.hash) return (err.textContent = 'Invalid username or password');
+    DB.set('f:session', rec.username);
+    location.href = 'app.html';
+  }
+});
+// allow enter key
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter') document.getElementById('submitBtn').click();
+});
+// auto-login if already logged in
+(function(){
+  var saved = DB.get('f:session');
+  if (saved) { var u = DB.users()[saved.toLowerCase()]; if (u) location.href = 'app.html'; }
+})();
+</script>
+</body>
+</html>
